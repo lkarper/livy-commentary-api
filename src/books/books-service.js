@@ -80,7 +80,17 @@ const BooksService = {
             )
             .where({ book_number })
             .first();
-    }
+    },
+    insertBook(db, newBook) {
+        return db
+            .insert(newBook)
+            .into('commentary_books')
+            .returning('*')
+            .then(([book]) => book)
+            .then(book => 
+                BooksService.getByBookNumber(db, book.book_number)
+            );
+    },
 }
 
 module.exports = BooksService;
