@@ -4,6 +4,9 @@ const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
+const booksRouter = require('./books/books-router');
+const chaptersRouter = require('./chapters/chapters-router');
+const sectionsRouter = require('./sections/sections-router');
 
 const app = express();
 
@@ -15,6 +18,10 @@ app.use(cors());
 app.get('/', (req, res) => {
     res.send('Hello, boilerplate!');
 });
+
+app.use('/api/books', booksRouter);
+app.use('/api/chapters', chaptersRouter);
+app.use('/api/sections', sectionsRouter);
 
 app.use(function errorHandler(error, req, res, next) {
     let response;
