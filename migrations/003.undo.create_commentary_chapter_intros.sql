@@ -1,1 +1,0 @@
-DROP TABLE IF EXISTS commentary_chapter_intros;
