@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 const BooksService = require('./books-service');
+const { requireAuth } = require('../middleware/jwt-auth');
 
 const booksRouter = express.Router();
 const jsonParser = express.json();
@@ -11,6 +12,29 @@ booksRouter
         BooksService.getAllBooks(req.app.get('db'))
             .then(books => {
                 res.json(books);
+            })
+            .catch(next);
+    })
+    .post(requireAuth, jsonParser, (req, res, next) => {
+        const { book_number } = req.body;
+        const newBook = { book_number };
+
+        for (const [key, value] of Object.entries(newBook)) {
+            if (value == null) {
+                return res.status(400).json({
+                    error: `Missing '${key}' in request body`,
+                });
+            }
+        }
+        BooksService.insertBook(
+            req.app.get('db'),
+            newBook
+        )
+            .then(book => {
+                res
+                    .status(201)
+                    .location(path.posix.join(req.originalUrl, `/${book_number}`))
+                    .json(book);
             })
             .catch(next);
     });
