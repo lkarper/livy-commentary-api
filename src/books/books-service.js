@@ -91,6 +91,16 @@ const BooksService = {
                 BooksService.getByBookNumber(db, book.book_number)
             );
     },
+    updateBook(db, id, newBookFields) {
+        return db('commentary_books')
+            .where({ id })
+            .update(newBookFields);
+    },
+    deleteBook(db, id) {
+        return db('commentary_books')
+            .where({ id })
+            .delete();
+    },
 }
 
 module.exports = BooksService;

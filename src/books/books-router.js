@@ -69,6 +69,39 @@ booksRouter
     })
     .get((req, res, next) => {
         res.json(res.book);
+    })
+    .delete(requireAuth, (req, res, next) => {
+        BooksService.deleteBook(
+            req.app.get('db'),
+            res.book.id
+        )
+            .then(() => {
+                res.status(204).end();
+            })
+            .catch(next);
+    })
+    .patch(requireAuth, jsonParser, (req, res, next) => {
+        const { book_number } = req.body;
+        const bookToUpdate = { book_number };
+
+        const numberOfValues = Object.values(bookToUpdate).filter(Boolean).length;
+        if (numberOfValues === 0) {
+            return res.status(400).json({
+                error: {
+                    message: `Request body must contain 'book_number'`,
+                },
+            });
+        } 
+
+        BooksService.updateBook(
+            req.app.get('db'),
+            res.book.id,
+            bookToUpdate
+        )
+            .then(numRowsAffected => {
+                res.status(204).end();
+            })
+            .catch(next);
     });
 
 module.exports = booksRouter;
