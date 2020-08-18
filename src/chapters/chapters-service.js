@@ -70,7 +70,27 @@ const ChaptersService = {
             )
             .where('chap.chapter_number', chapter_number)
             .first();
-    }
+    },
+    insertChapter(db, newChapter) {
+        return db
+            .insert(newChapter)
+            .into('commentary_chapters')
+            .returning('*')
+            .then(([chapter]) => chapter)
+            .then(chapter =>
+                ChaptersService.getByChapterNumber(db, chapter.chapter_number)    
+            );
+    },
+    updateChapter(db, id, newChapterFields) {
+        return db('commentary_chapters')
+            .where({ id })
+            .update(newChapterFields);       
+    },
+    deleteChapter(db, id) {
+        return db('commentary_chapters')
+            .where({ id })
+            .delete();
+    },
 }
 
 module.exports = ChaptersService;
