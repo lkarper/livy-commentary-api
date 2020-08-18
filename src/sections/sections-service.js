@@ -52,6 +52,26 @@ const SectionsService = {
         )
             .first();
     },
+    insertSection(db, newSection) {
+        return db
+            .insert(newSection)
+            .into('commentary_chapter_sections')
+            .returning('*')
+            .then(([section]) => section)
+            .then(section => 
+                this.getSectionByNumber(db, section.section_number)
+            );
+    },
+    updateSection(db, id, newSectionFields) {
+        return db('commentary_chapter_sections')
+            .where({ id })
+            .update(newSectionFields);
+    },
+    deleteSection(db, id) {
+        return db('commentary_chapter_sections')
+            .where({ id })
+            .delete()
+    },
 }
 
 module.exports = SectionsService;

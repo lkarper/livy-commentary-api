@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 const SectionsService = require('./sections-service');
+const { requireAuth } = require('../middleware/jwt-auth');
 
 const sectionsRouter = express.Router();
 const jsonParser = express.json();
@@ -11,6 +12,30 @@ sectionsRouter
         SectionsService.getAllSections(req.app.get('db'))
             .then(sections => {
                 res.json(sections);
+            })
+            .catch(next);
+    })
+    .post(requireAuth, jsonParser, (req, res, next) => {
+        const { section_number, chapter_number, latin } = req.body;
+        const newSection = { section_number, chapter_number, latin };
+
+        for (const [key, value] of Object.entries(newSection)) {
+            if (value == null) {
+                return res.status(400).json({
+                    error: `Missing '${key}' in request body`,
+                });
+            }
+        }
+
+        SectionsService.insertSection(
+            req.app.get('db'),
+            newSection
+        )
+            .then(section => {
+                res
+                    .status(201)
+                    .location(path.posix.join(req.originalUrl, `/${section_number}`))
+                    .json(section);
             })
             .catch(next);
     });
@@ -45,6 +70,39 @@ sectionsRouter
     })
     .get((req, res, next) => {
         res.json(res.section);
+    })
+    .delete(requireAuth, (req, res, next) => {
+        SectionsService.deleteSection(
+            req.app.get('db'),
+            res.section.id
+        )
+            .then(() => {
+                res.status(204).end();
+            })
+            .catch(next);
+    })
+    .patch(requireAuth, jsonParser, (req, res, next) => {
+        const { section_number, chapter_number, latin } = req.body;
+        const sectionToUpdate = { section_number, chapter_number, latin };    
+
+        const numberOfValues = Object.values(sectionToUpdate).filter(Boolean).length;
+        if (numberOfValues === 0) {
+            return res.status(400).json({
+                error: {
+                    message: `Request body must contain 'section_number', 'chapter_number', or 'latin'`,
+                },
+            });
+        }
+
+        SectionsService.updateSection(
+            req.app.get('db'),
+            res.section.id,
+            sectionToUpdate
+        )
+            .then(numRowsAffected => {
+                res.status(204).end();
+            })
+            .catch(next);
     });
 
 module.exports = sectionsRouter;
