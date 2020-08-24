@@ -11,7 +11,7 @@ sectionsRouter
     .get((req, res, next) => {
         SectionsService.getAllSections(req.app.get('db'))
             .then(sections => {
-                res.json(sections);
+                res.json(sections.map(SectionsService.formatSection));
             })
             .catch(next);
     })
@@ -35,7 +35,7 @@ sectionsRouter
                 res
                     .status(201)
                     .location(path.posix.join(req.originalUrl, `/${section_number}`))
-                    .json(section);
+                    .json(SectionsService.formatSection(section));
             })
             .catch(next);
     });
@@ -69,7 +69,7 @@ sectionsRouter
             .catch(next);
     })
     .get((req, res, next) => {
-        res.json(res.section);
+        res.json(SectionsService.formatSection(res.section));
     })
     .delete(requireAuth, (req, res, next) => {
         SectionsService.deleteSection(

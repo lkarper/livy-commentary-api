@@ -11,7 +11,7 @@ chaptersRouter
     .get((req, res, next) => {
         ChaptersService.getAllChapters(req.app.get('db'))
             .then(chapters => {
-                res.json(chapters);
+                res.json(chapters.map(ChaptersService.formatChapter));
             })
             .catch(next);
     })
@@ -40,7 +40,7 @@ chaptersRouter
                 res
                     .status(201)
                     .location(path.posix.join(req.originalUrl, `/${chapter_number}`))
-                    .json(chapter);
+                    .json(ChaptersService.formatChapter(chapter));
             })
             .catch(next);
     });
@@ -74,7 +74,7 @@ chaptersRouter
             .catch(next);
     })
     .get((req, res, next) => {
-        res.json(res.chapter);
+        res.json(ChaptersService.formatChapter(res.chapter));
     })
     .delete(requireAuth, (req, res, next) => {
         ChaptersService.deleteChapter(

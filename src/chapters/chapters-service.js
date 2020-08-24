@@ -91,6 +91,40 @@ const ChaptersService = {
             .where({ id })
             .delete();
     },
+    formatChapter(chapter) {
+        const {
+            id,
+            book_number,
+            chapter_number,
+            chapter_title,
+            chapter_intro,
+            sections,
+        } = chapter;
+        return {
+            id,
+            book_number,
+            chapter_number,
+            chapter_title,
+            chapter_intro,
+            sections: sections ? sections.map(s => ChaptersService.formatSection(s)) : []
+        };
+    },
+    formatSection(section) {
+        const {
+            id,
+            section_number,
+            chapter_number,
+            latin,
+            comments,
+        } = section;
+        return {
+            id,
+            section_number,
+            chapter_number,
+            latin,
+            comments: comments ? comments : []
+        }
+    },
 }
 
 module.exports = ChaptersService;

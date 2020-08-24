@@ -101,6 +101,52 @@ const BooksService = {
             .where({ id })
             .delete();
     },
+    formatBook(book) {
+        const {
+            id,
+            book_number,
+            chapters,
+        } = book;
+        return {
+            id,
+            book_number,
+            chapters: chapters ? chapters.map(c => BooksService.formatChapter(c)) : []
+        };
+    },
+    formatChapter(chapter) {
+        const {
+            id,
+            book_number,
+            chapter_number,
+            chapter_title,
+            chapter_intro,
+            sections,
+        } = chapter;
+        return {
+            id,
+            book_number,
+            chapter_number,
+            chapter_title,
+            chapter_intro,
+            sections: sections ? sections.map(s => BooksService.formatSection(s)) : []
+        };
+    },
+    formatSection(section) {
+        const {
+            id,
+            section_number,
+            chapter_number,
+            latin,
+            comments,
+        } = section;
+        return {
+            id,
+            section_number,
+            chapter_number,
+            latin,
+            comments: comments ? comments : []
+        }
+    },
 }
 
 module.exports = BooksService;

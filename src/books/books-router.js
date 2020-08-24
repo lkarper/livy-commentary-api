@@ -11,7 +11,7 @@ booksRouter
     .get((req, res, next) => {
         BooksService.getAllBooks(req.app.get('db'))
             .then(books => {
-                res.json(books);
+                res.json(books.map(BooksService.formatBook));
             })
             .catch(next);
     })
@@ -34,7 +34,7 @@ booksRouter
                 res
                     .status(201)
                     .location(path.posix.join(req.originalUrl, `/${book_number}`))
-                    .json(book);
+                    .json(BooksService.formatBook(book));
             })
             .catch(next);
     });
@@ -68,7 +68,7 @@ booksRouter
             .catch(next);
     })
     .get((req, res, next) => {
-        res.json(res.book);
+        res.json(BooksService.formatBook(res.book));
     })
     .delete(requireAuth, (req, res, next) => {
         BooksService.deleteBook(

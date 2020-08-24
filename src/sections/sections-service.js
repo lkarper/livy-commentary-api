@@ -91,6 +91,22 @@ const SectionsService = {
             .where({ id })
             .delete()
     },
+    formatSection(section) {
+        const {
+            id,
+            section_number,
+            chapter_number,
+            latin,
+            comments,
+        } = section;
+        return {
+            id,
+            section_number,
+            chapter_number,
+            latin,
+            comments: comments ? comments : []
+        }
+    },
 }
 
 module.exports = SectionsService;
