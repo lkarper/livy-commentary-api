@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const SectionsService = require('./sections-service');
 const { requireAuth } = require('../middleware/jwt-auth');
+const BooksService = require('../books/books-service');
 
 const sectionsRouter = express.Router();
 const jsonParser = express.json();
@@ -45,7 +46,7 @@ sectionsRouter
     .get((req, res, next) => {
         SectionsService.getAllSectionNumbers(req.app.get('db'))
             .then(sectionNumbers => {
-                res.json(sectionNumbers);
+                res.json(sectionNumbers.map(BooksService.formatBook));
             })
             .catch(next);
     });
