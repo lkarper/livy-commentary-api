@@ -32,7 +32,7 @@ const SectionsService = {
                     select array_to_json(
                         array_agg(row_to_json(h))
                     ) from (
-                        select id, book_number, chapter_number, chapter_title, (
+                        select id, book_number, chapter_number, chapter_title, chapter_intro, (
                             select array_to_json(
                                 array_agg(row_to_json(h))
                             ) from (
