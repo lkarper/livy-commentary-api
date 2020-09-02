@@ -10,8 +10,8 @@ commentsRouter
     .route('/')
     .all(requireAuth)
     .post(jsonParser, (req, res, next) => {
-        const { section, tag, comment } = req.body;
-        const newComment = { section, tag, comment };
+        const { section, tag, comment, comment_order } = req.body;
+        const newComment = { section, tag, comment, comment_order };
 
         for (const [key, value] of Object.entries(newComment)) {
             if (value == null) {
@@ -66,8 +66,8 @@ commentsRouter
             .catch(next);
     })
     .patch(requireAuth, jsonParser, (req, res, next) => {
-        const { section, tag, comment } = req.body;
-        const commentToUpdate = { section, tag, comment };
+        const { section, tag, comment, comment_order } = req.body;
+        const commentToUpdate = { section, tag, comment, comment_order };
 
         const numberOfValues = Object.values(commentToUpdate).filter(Boolean).length;
         if (numberOfValues === 0) {

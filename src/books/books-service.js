@@ -18,7 +18,7 @@ const BooksService = {
                                     select array_to_json(
                                         array_agg(row_to_json(h))
                                     ) from (
-                                        select id, section, tag, comment
+                                        select id, section, tag, comment, comment_order
                                         from commentary_comments AS cc
                                         where cc.section=ccs.section_number
                                     ) h
@@ -63,7 +63,7 @@ const BooksService = {
                                         select array_to_json(
                                             array_agg(row_to_json(h))
                                         ) from (
-                                            select id, section, tag, comment
+                                            select id, section, tag, comment, comment_order
                                             from commentary_comments AS cc
                                             where cc.section=ccs.section_number
                                         ) h
